@@ -4,6 +4,9 @@ NVCC = nvcc
 NVCCFLAGS = -O3 -arch=sm_80
 LDFLAGS = -lcudart -lcublas
 
+KERNEL_VERSION=KERNEL1
+NVCCFLAGS += -D$(KERNEL_VERSION)
+
 all: mygemm
 
 KERNEL_FILES = kernel1.cpp kernel2.cpp kernel3.cpp kernel4.cpp kernel5.cpp kernel6.cpp

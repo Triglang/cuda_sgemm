@@ -19,13 +19,13 @@ void *my_malloc(uint64_t size)
 
 void my_gemm(int n, int m, int k, float *d_A, float *d_B, float *d_C)
 {
-#if 0
+#if defined(KERNEL1) 
     // naive
     dim3 block(32, 32);
     dim3 grid((m + block.x - 1) / block.x, (n + block.y - 1) / block.y);
 
     gemm_kernel1<<<grid, block>>>(d_A, d_B, d_C, n, m, k);
-#elif 0
+#elif defined(KERNEL2)
     // cache blocking
     constexpr int BLOCK_SIZE = 32;
 
@@ -33,7 +33,7 @@ void my_gemm(int n, int m, int k, float *d_A, float *d_B, float *d_C)
     dim3 grid((m + block.x - 1) / block.x, (n + block.y - 1) / block.y);
     
     gemm_kernel2<<<grid, block>>>(d_A, d_B, d_C, n, m, k);
-#elif 0
+#elif defined(KERNEL3)
     // cache blocking with 1 x 4 micro kernel
     constexpr int BLOCK_SIZE = 32;
 
@@ -41,7 +41,7 @@ void my_gemm(int n, int m, int k, float *d_A, float *d_B, float *d_C)
     dim3 grid((m + BLOCK_SIZE - 1) / BLOCK_SIZE, (n + BLOCK_SIZE - 1) / BLOCK_SIZE);
 
     gemm_kernel3<<<grid, block>>>(d_A, d_B, d_C, n, m, k);
-#elif 0
+#elif defined(KERNEL4)
     // cache blocking, using 1 x 4 micro kernel with float4
     constexpr int BLOCK_SIZE = 32;
 
@@ -49,7 +49,7 @@ void my_gemm(int n, int m, int k, float *d_A, float *d_B, float *d_C)
     dim3 grid((m + BLOCK_SIZE - 1) / BLOCK_SIZE, (n + BLOCK_SIZE - 1) / BLOCK_SIZE);
 
     gemm_kernel4<<<grid, block>>>(d_A, d_B, d_C, n, m, k);
-#elif 1
+#elif defined(KERNEL5)
     // cache blocking, using 4 x 4 micro kernel with float4 under 256 threads per block
     constexpr int BLOCK_SIZE = 16;
     constexpr int TILE_SIZE = BLOCK_SIZE * 4;
